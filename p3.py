@@ -1,5 +1,3 @@
-
-#Block 1: Function, Uppercase & Mapping
 def soundex(name):
     name = name.upper()
     code = {
@@ -11,31 +9,21 @@ def soundex(name):
         "R":"6"
     }
 
-#Block 2: Keep First Letter & Convert Letters to Numbers
-
     first = name[0]
-    nums = []
-    for ch in name[1:]:
-        if ch in code:
-            nums.append(code[ch])
-        else:
-            nums.append("0")
-
-#Block 3: Remove Duplicate Numbers
     result = []
     prev = ""
-    for n in nums:
-        if n != prev:
-            result.append(n)
-        prev = n
 
-#Block 4: Remove Zeros & Return First 4 Characters
-
+    for ch in name[1:]:
+        if ch in code:
+            num = code[ch]
+        else:
+            num = "0"
+        if num != prev:
+            result.append(num)
+        prev = num
     result = [x for x in result if x != "0"]
-    ans = first + "".join(result)
-    return ans[:4].ljust(4, "0")
+    return (first + "".join(result))[:4].ljust(4, "0")
 
 
-name = input("Enter Name : ")
-
-print("Soundex Code :", soundex(name))
+name = input("Enter Name: ")
+print("Soundex Code:", soundex(name))
