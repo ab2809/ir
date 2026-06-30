@@ -1,28 +1,25 @@
 #1) Edit Distance between two strings
-def editdistance(str1, str2, m, n):
-    # Base cases
-    if m == 0:      
+def edit(s1, s2, m, n):
+
+    if m == 0:
         return n
-    if n == 0:     
+
+    if n == 0:
         return m
 
-    # If last characters are same
-    if str1[m-1] == str2[n-1]:      
-        return editdistance(str1, str2, m-1, n-1)
+    if s1[m-1] == s2[n-1]:
+        return edit(s1, s2, m-1, n-1)
 
-    # If last characters are different
     return 1 + min(
-        editdistance(str1, str2, m, n-1),     # Insert
-        editdistance(str1, str2, m-1, n),     # Remove
-        editdistance(str1, str2, m-1, n-1)    # Replace
+        edit(s1, s2, m, n-1),
+        edit(s1, s2, m-1, n),
+        edit(s1, s2, m-1, n-1)
     )
 
-# Input
-str1 = input("Enter string 1: ")
-str2 = input("Enter string 2: ")
+str1 = input("Enter String 1: ")
+str2 = input("Enter String 2: ")
 
-# Output
-print("Edit Distance is:", editdistance(str1, str2, len(str1), len(str2)))
+print("Edit Distance is:", edit(str1, str2, len(str1), len(str2)))
 
 
 #2) Weighted Edit Distance (Levenshtein Distance)
