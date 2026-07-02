@@ -2,14 +2,12 @@ import csv
 import requests
 import xml.etree.ElementTree as ET
 
-# Load RSS feed
 def load_rss(url, filename):
     resp = requests.get(url)
     with open(filename, 'wb') as f:
         f.write(resp.content)
     print(f"RSS feed loaded and saved to '{filename}'.")
 
-# Parse XML and extract items
 def parse_xml(xmlfile):
     tree = ET.parse(xmlfile)
     root = tree.getroot()
@@ -21,21 +19,16 @@ def parse_xml(xmlfile):
         news = {}
 
         for child in item:
-            tag = child.tag.split('}')[-1]   # remove namespace
+            tag = child.tag.split('}')[-1] 
 
-            # keep only required fields
             if tag in allowed_fields:
                 news[tag] = child.text
 
-            # handle media content if present
             if tag == 'content' and 'url' in child.attrib:
                 news['media'] = child.attrib['url']
-
         newsitems.append(news)
-
     return newsitems
 
-# Save to CSV
 def save_to_csv(newsitems, filename):
     fields = ['guid', 'title', 'pubDate', 'description', 'link', 'media']
 
