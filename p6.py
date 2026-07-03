@@ -1,52 +1,76 @@
+# 6. Compute Similarity between Two Text Documents
+
 import nltk
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from collections import defaultdict
-
 
 nltk.download("punkt")
 nltk.download("stopwords")
-def process(file):
-    raw = open(file).read().lower()
-    tokens = word_tokenize(raw)
-
-    stop_words = set(stopwords.words("english"))
-    words = [w for w in tokens if w.isalpha() and w not in stop_words]
+stop_words = set(stopwords.words("english"))  # Initialize
 
 
-    count = defaultdict(int)
-    for word in words:
-        count[word] += 1
+file1 = open("text1.txt").read().lower()
+file2 = open("text2.txt").read().lower()      # Read Files
+
+# Tokenize
+words1 = word_tokenize(file1)
+words2 = word_tokenize(file2)
+
+tokens1 = []
+tokens2 = []
+
+freq1 = {}
+freq2 = {}
+
+v1 = []
+v2 = []
 
 
-    return count
 
+# Remove Stopwords
+for word in words1:
+    if word.isalpha() and word not in stop_words:
+        tokens1.append(word)
 
-def cs_sim(a, b):
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+for word in words2:
+    if word.isalpha() and word not in stop_words:
+        tokens2.append(word)
 
+# Count Frequency
+for word in tokens1:
+    if word in freq1:
+        freq1[word] += 1
+    else:
+        freq1[word] = 1
 
-def getSimilarity(dict1, dict2):
-    all_words = list(set(dict1.keys()).union(dict2.keys()))
+for word in tokens2:
+    if word in freq2:
+        freq2[word] += 1
+    else:
+        freq2[word] = 1
 
+# Unique Words
+all_words = list(set(tokens1 + tokens2))
 
-    v1 = np.zeros(len(all_words))
-    v2 = np.zeros(len(all_words))
+# Create Vectors
+for word in all_words:
 
+    if word in freq1:
+        v1.append(freq1[word])
+    else:
+        v1.append(0)
 
-    for i, word in enumerate(all_words):
-        v1[i] = dict1.get(word, 0)
-        v2[i] = dict2.get(word, 0)
+    if word in freq2:
+        v2.append(freq2[word])
+    else:
+        v2.append(0)
 
+# Cosine Similarity
+dot = np.dot(v1, v2)
+mag1 = np.linalg.norm(v1)
+mag2 = np.linalg.norm(v2)
 
-    return cs_sim(v1, v2)
+similarity = dot / (mag1 * mag2)
 
-
-if __name__ == "__main__":
-    dict1 = process("text1.txt")
-    dict2 = process("text2.txt")
-
-
-    print("Similarity between two text documents:",
-          getSimilarity(dict1, dict2))
+print("Cosine Similarity:", similarity)
